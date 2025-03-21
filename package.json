@@ -1,6 +1,17 @@
 {
   "name": "magnidev",
+  "license": "ISC",
   "private": true,
+  "description": "",
+  "publisher": "fermeridamagni <Magni Developer>",
+  "author": {
+    "name": "fermeridamagni <Magni Developer>",
+    "url": "https://magnideveloper.com"
+  },
+  "repository": {
+    "url": "https://github.com/fermeridamagni/simple-auth.git",
+    "type": "git"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -8,6 +19,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "^2.4.4",
