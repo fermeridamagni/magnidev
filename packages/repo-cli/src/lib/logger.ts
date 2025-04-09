@@ -24,22 +24,19 @@ export class Logger {
   /**
    * Logs an error message to the console
    * @param message
+   * @param error
    */
-  public error(message: any) {
-    if (typeof message !== "string") {
-      message = JSON.stringify(message, null, 2);
-    }
-    console.error(`${colors.bgRed("Error:")} ${colors.red(message)}`);
+  public error(message: string, error?: any) {
+    console.error(
+      `${colors.bgRed("Error:")} ${colors.red(message)}${error ? " - " + error : ""}`
+    );
   }
 
   /**
    * Logs a success message to the console
    * @param message
    */
-  public success(message: any) {
-    if (typeof message !== "string") {
-      message = JSON.stringify(message, null, 2);
-    }
+  public success(message: string) {
     console.log(`${colors.bgGreen("Success:")} ${colors.green(message)}`);
   }
 
@@ -47,10 +44,7 @@ export class Logger {
    * Logs an info message to the console
    * @param message
    */
-  public info(message: any) {
-    if (typeof message !== "string") {
-      message = JSON.stringify(message, null, 2);
-    }
+  public info(message: string) {
     console.log(`${colors.bgBlue("Info:")} ${colors.blue(message)}`);
   }
 
@@ -58,10 +52,7 @@ export class Logger {
    * Logs a warning message to the console
    * @param message
    */
-  public warning(message: any) {
-    if (typeof message !== "string") {
-      message = JSON.stringify(message, null, 2);
-    }
+  public warning(message: string) {
     console.warn(`${colors.bgYellow("Warning:")} ${colors.yellow(message)}`);
   }
 }

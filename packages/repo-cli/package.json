@@ -1,20 +1,23 @@
 {
   "name": "@magnidev/repo-cli",
-  "version": "2.0.0",
+  "version": "0.0.1",
   "license": "ISC",
   "description": "CLI tool for managing GitHub repositories.",
   "publisher": "fermeridamagni <Magni Developer>",
-  "author": "fermeridamagni <Magni Developer> (https://www.magnideveloper.com)",
+  "author": {
+    "name": "fermeridamagni <Magni Developer>",
+    "url": "https://www.magnideveloper.com"
+  },
   "repository": {
-    "url": "git+https://github.com/MagniDeveloper/magnidev.git",
+    "url": "git+https://github.com/fermeridamagni/magnidev.git",
     "type": "git",
     "directory": "packages/repo-cli"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/MagniDeveloper/magnidev/issues"
+    "url": "https://github.com/fermeridamagni/magnidev/issues"
   },
-  "homepage": "https://github.com/MagniDeveloper/magnidev/tree/main/packages/repo-cli#readme",
+  "homepage": "https://github.com/fermeridamagni/magnidev/tree/main/packages/repo-cli#readme",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node src/index.ts"
@@ -34,10 +37,10 @@
   ],
   "publishConfig": {
     "access": "public",
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@clack/prompts": "^0.10.0",
+    "@clack/prompts": "^0.10.1",
     "@octokit/rest": "^21.1.1",
     "commander": "^13.1.0",
     "dotenv": "^16.4.7",
@@ -48,9 +51,9 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^22.13.13",
-    "@types/semver": "^7.5.8",
+    "@types/node": "^22.14.0",
+    "@types/semver": "^7.7.0",
     "ts-node": "^10.9.2",
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   }
 }

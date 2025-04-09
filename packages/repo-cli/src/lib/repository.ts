@@ -6,14 +6,13 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { z } from "zod";
-import type { DefaultLogFields, ListLogLine } from "simple-git";
 import dotenv from "dotenv";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 import type { Config } from "../types";
-import { readJSON } from "../utils";
+import { repoSchema } from "../schemas/repo.schema";
+import { readJSON } from "../utils/files";
 import { Packages } from "./packages";
 import { Logger } from "./logger";
 import { Git } from "./git";
@@ -33,131 +32,47 @@ export class Repository {
     this.packages = new Packages(this.config);
   }
 
+  /**
+   * @description Get the repository configuration from package.json
+   * @returns {Config} The repository configuration
+   */
   private getConfig(): Config {
-    const configFileDir = path.join(process.cwd(), ".repo", "config.json");
+    const rootPackageJsonPath = path.join(process.cwd(), "package.json");
 
-    if (!fs.existsSync(configFileDir)) {
-      this.logger.error("Configuration file not found at " + configFileDir);
+    if (!fs.existsSync(rootPackageJsonPath)) {
+      this.logger.error(`No package.json found at: ${rootPackageJsonPath}`);
       process.exit(1);
     }
 
-    const repoConfigSchema = repoSchema.safeParse({
-      ...readJSON(configFileDir),
+    const rootPackageJson = readJSON(rootPackageJsonPath);
+
+    const { success, data, error } = repoSchema.safeParse({
+      ...rootPackageJson,
       env: {
         GITHUB_TOKEN: process.env.GITHUB_TOKEN,
-        GITHUB_REPOSITORY_URL: process.env.GITHUB_REPOSITORY_URL,
       },
-    });
+    } as Config);
 
-    if (!repoConfigSchema.success) {
+    if (!success) {
       this.logger.error(
-        `Invalid configuration: missing required fields ${repoConfigSchema.error.issues.map((issue) => `\n${issue.path.join(".")} ${issue.message}`).join(", ")}`
+        `Invalid configuration: missing required fields ${error.issues.map((issue) => `\n${issue.path.join(".")} ${issue.message}`).join(", ")}`
       );
       process.exit(1);
     }
 
-    return repoConfigSchema.data;
+    return data;
   }
 
   /**
-   * @description Generates the notes for the release based on the commit messages
-   * @param version - The version of the release
-   * @param commits - The list of commits to include in the release notes
-   * @returns The release notes as a string
+   * @description Get the repository type (monorepo or single)
+   * @returns {"monorepo" | "single"} The type of repository
    */
-  public async generateNotes({
-    version,
-    commits,
-  }: {
-    version: string;
-    commits: (DefaultLogFields & ListLogLine)[];
-  }): Promise<string> {
-    let notes: string = `## ${version} (${new Date().toLocaleDateString()})\n\n`;
+  public getRepoType(): "monorepo" | "single" {
+    const packageJsonPath = path.join(process.cwd(), "package.json");
+    const packageJson = readJSON(packageJsonPath);
 
-    const authors = new Set<{
-      name: string;
-      commits: string[];
-    }>();
+    if (packageJson.workspaces) return "monorepo";
 
-    commits.forEach((commit) => {
-      const commitAuthor = commit.author_name;
-
-      // if the author is not in the set, add it
-      if (!Array.from(authors).some((author) => author.name === commitAuthor)) {
-        authors.add({
-          name: commitAuthor,
-          commits: [],
-        });
-      }
-
-      // add the commit to the author's commits if it doesn't exist
-      const author = Array.from(authors).find(
-        (author) => author.name === commitAuthor
-      );
-      if (author) author.commits.push(commit.hash);
-    });
-
-    notes += `### Changes\n`;
-    commits.forEach((commit) => {
-      notes += `- ${commit.message} (${commit.hash})\n`;
-    });
-
-    return notes;
+    return "single";
   }
 }
-
-const repoSchema = z.object({
-  /**
-   * Environment variables for the repository
-   * @description The environment variables for the repository
-   */
-  env: z.object({
-    /**
-     * Github token for authentication
-     * @description The Github token for authentication
-     */
-    GITHUB_TOKEN: z.string().min(1, { message: "GITHUB_TOKEN is required" }),
-    /**
-     * Github repository URL
-     * @description The Github repository URL
-     */
-    GITHUB_REPOSITORY_URL: z
-      .string()
-      .url({ message: "GITHUB_REPOSITORY_URL is required" }),
-  }),
-
-  /**
-   *  The type of the repository
-   * @default monorepo
-   * @description The type of the repository
-   * - monorepo: A monorepo with multiple packages
-   * - single: A single package repository
-   */
-  repoType: z.enum(["monorepo", "single"]).default("monorepo"),
-
-  /**
-   * Project configuration
-   * @default independent
-   * @description The versioning strategy for the packages
-   * - independent: Each package has its own version
-   * - fixed: All packages share the same version
-   */
-  versionStrategy: z.enum(["independent", "fixed"]).default("independent"),
-
-  /**
-   * The branch to use for the release
-   * @default main
-   * @description The branch to use for the release
-   */
-  branch: z.string().min(1, { message: "Branch is required" }).default("main"),
-
-  /**
-   * Monorepo configuration
-   * @description The directory where the packages are
-   * @default packages
-   */
-  packagesDir: z
-    .string()
-    .min(1, { message: "Packages directory is required" })
-    .default("packages"),
-});

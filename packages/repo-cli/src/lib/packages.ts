@@ -4,11 +4,11 @@
  * @description Class to find and manage packages in a repository
  */
 
-import * as fs from "node:fs";
+import fg from "fast-glob";
 import * as path from "node:path";
 
 import type { Package, Config } from "../types";
-import { readJSON } from "../utils";
+import { readJSON, dirExists } from "../utils/files";
 
 export class Packages {
   private config: Config;
@@ -23,11 +23,11 @@ export class Packages {
    * @returns {Package | null} Package object or null if not found
    */
   async findPackage(dir: string): Promise<Package | null> {
-    if (!fs.existsSync(dir)) return null;
+    if (!dirExists(dir)) return null;
 
     const packageJsonPath = path.join(dir, "package.json");
 
-    if (fs.existsSync(packageJsonPath)) {
+    if (dirExists(packageJsonPath)) {
       const packageJson = readJSON(packageJsonPath);
       return {
         name: packageJson.name,
@@ -45,39 +45,26 @@ export class Packages {
    * @param dir Directory to search for packages
    * @returns {Package[]} List of package directories
    */
-  async findMonorepoPackages(dir: string): Promise<Package[]> {
-    if (!fs.existsSync(dir)) return [];
+  async findWorkspacePackages(dir: string): Promise<Package[] | null> {
+    if (!dirExists(dir)) return null;
 
-    const packagesDir = path.join(dir, this.config.packagesDir);
+    // example of workspaces: ["packages/*"]
+    const workspaces = this.config.workspaces || [];
+    const packages: Package[] = [];
 
-    if (!fs.existsSync(packagesDir)) return [];
+    for (const workspace of workspaces) {
+      const packageDirs = await fg([workspace], {
+        cwd: dir,
+        onlyDirectories: true,
+      });
 
-    const dirs = fs
-      .readdirSync(packagesDir)
-      .filter((foundDir) =>
-        fs.statSync(path.join(packagesDir, foundDir)).isDirectory()
-      );
+      for (const packageDir of packageDirs) {
+        const packagePath = path.join(dir, packageDir);
+        const pkg = await this.findPackage(packagePath);
+        if (pkg) packages.push(pkg);
+      }
+    }
 
-    return dirs
-      .map((foundDir) => {
-        const packageJsonPath = path.join(
-          packagesDir,
-          foundDir,
-          "package.json"
-        );
-
-        if (fs.existsSync(packageJsonPath)) {
-          const packageJson = readJSON(packageJsonPath);
-
-          return {
-            name: packageJson.name,
-            version: packageJson.version,
-            dir: path.join(packagesDir, foundDir),
-            packageJson,
-          };
-        }
-        return null;
-      })
-      .filter((pkg): pkg is Package => pkg !== null);
+    return packages;
   }
 }

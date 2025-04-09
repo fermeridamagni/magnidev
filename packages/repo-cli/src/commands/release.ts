@@ -6,7 +6,6 @@
 
 import * as prompts from "@clack/prompts";
 import * as path from "node:path";
-import * as fs from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import { Command } from "commander";
 import colors from "picocolors";
@@ -15,6 +14,8 @@ import semver, { type ReleaseType } from "semver";
 import type { Package } from "../types";
 import { Repository } from "../lib/repository";
 import { intro } from "../assets/intro";
+import { generateNotes } from "../utils/notes";
+import { dirExists, readAsync, writeAsync } from "../utils/files";
 
 export function releaseCommand(program: Command): void {
   program
@@ -40,25 +41,20 @@ export function releaseCommand(program: Command): void {
 
         prompts.intro(colors.white(intro));
 
-        const beforeSpin = prompts.spinner();
-        beforeSpin.start("Getting package information");
-
-        if (!(await repository.git.isRepo())) {
-          beforeSpin.stop("Process finished.");
+        // Check if the repository is a git repository
+        if (!(await repository.git.client.checkIsRepo())) {
           return onCancel("Not a git repository.");
         }
 
         if ((await repository.git.client.status()).files.length > 0) {
-          beforeSpin.stop("Process finished.");
           return onCancel("Changes detected. Commit changes before releasing.");
         }
 
-        if (repository.config.repoType === "monorepo") {
+        if (repository.config.workspaces) {
           const foundMonorepoPackages =
-            await repository.packages.findMonorepoPackages(process.cwd());
+            await repository.packages.findWorkspacePackages(process.cwd());
 
-          if (foundMonorepoPackages.length === 0) {
-            beforeSpin.stop("Process finished.");
+          if (!foundMonorepoPackages || foundMonorepoPackages.length === 0) {
             return onCancel("No packages found in the repository.");
           }
 
@@ -69,20 +65,35 @@ export function releaseCommand(program: Command): void {
           );
 
           if (foundPackage === null) {
-            beforeSpin.stop("Process finished.");
             return onCancel("No package found in the repository.");
           }
 
           packages = [foundPackage];
         }
 
-        beforeSpin.stop("Repository information loaded successfully");
+        const currentBranch = await repository.git.client.branch();
+        const currentBranchName = currentBranch.current;
+
+        prompts.note(
+          `name: ${colors.green(repository.config.name)}\nbranch: ${colors.green(
+            currentBranchName
+          )}`,
+          "Repository information loaded successfully!"
+        );
 
         const releaseConfig = await prompts.group(
           {
-            packageName: async () => {
-              if (repository.config.repoType === "monorepo") {
-                if (repository.config.versionStrategy === "fixed")
+            shouldContinue: async () =>
+              prompts.confirm({
+                message: "Are you sure you want to continue?",
+                initialValue: true,
+              }),
+            packageName: async ({ results }) => {
+              if (!results.shouldContinue)
+                return onCancel("Operation cancelled by the user.");
+
+              if (repository.getRepoType() === "monorepo") {
+                if (repository.config.release.versionStrategy === "fixed")
                   return undefined;
 
                 return prompts.select({
@@ -101,7 +112,7 @@ export function releaseCommand(program: Command): void {
             releaseBump: async ({ results }) => {
               let foundPackage: Package;
 
-              if (repository.config.repoType === "monorepo") {
+              if (repository.getRepoType() === "monorepo") {
                 if (!results.packageName)
                   return onCancel("No package selected.");
 
@@ -145,15 +156,6 @@ export function releaseCommand(program: Command): void {
                 message: "Create a draft release?",
                 initialValue: false,
               }),
-            shouldContinue: async ({ results }) => {
-              // If the user wants to create a draft release, we don't need to ask for confirmation
-              if (results.createDraft) return true;
-
-              return prompts.confirm({
-                message: "Are you sure you want to continue?",
-                initialValue: true,
-              });
-            },
           },
           {
             onCancel: () => onCancel("Operation cancelled by the user."),
@@ -178,8 +180,7 @@ export function releaseCommand(program: Command): void {
         )!;
 
         const commitTag: string =
-          repository.config.repoType === "monorepo" &&
-          repository.config.versionStrategy === "independent"
+          repository.config.release.versionStrategy === "independent"
             ? `${releaseConfig.packageName}@${newPackageVersion}`
             : `v${newPackageVersion}`;
 
@@ -195,7 +196,7 @@ export function releaseCommand(program: Command): void {
           return onCancel("No commits found since last release.");
         }
 
-        const notes = await repository.generateNotes({
+        const notes = await generateNotes({
           version: commitTag,
           commits: commits.all.map((commit) => ({
             ...commit,
@@ -208,16 +209,14 @@ export function releaseCommand(program: Command): void {
         const isPreRelease: boolean =
           semver.prerelease(newPackageVersion) !== null;
 
-        // #region Create release
         await repository.github.createRelease({
-          tagName: commitTag,
+          tag_name: commitTag,
           name: commitTag,
           body: notes,
           draft: releaseConfig.createDraft,
-          preRelease: isPreRelease,
+          prerelease: isPreRelease,
         });
 
-        // #region Update package.json
         const packageJsonPath = path.join(foundPackage.dir, "package.json");
 
         await fsPromises.writeFile(
@@ -232,31 +231,28 @@ export function releaseCommand(program: Command): void {
           )
         );
 
-        // #region Update changelog
         const changelogPath = path.join(foundPackage.dir, "CHANGELOG.md");
 
-        if (fs.existsSync(changelogPath)) {
-          const foundChangelog = fs.readFileSync(changelogPath, "utf-8");
+        if (dirExists(changelogPath)) {
+          const foundChangelog = await readAsync(changelogPath);
 
           const newChangelog = `${foundChangelog}\n\n${notes}`;
 
-          await fsPromises.writeFile(changelogPath, newChangelog, "utf-8");
+          await writeAsync(changelogPath, newChangelog);
         } else {
-          await fsPromises.writeFile(
-            changelogPath,
-            `# Changelog\n\n${notes}`,
-            "utf-8"
-          );
+          await writeAsync(changelogPath, "# Changelog\n\n");
         }
 
         await repository.git.client.add([packageJsonPath, changelogPath]);
 
         await repository.git.client.commit(`chore(release): bump ${commitTag}`);
-        await repository.git.client.push("origin", repository.config.branch);
+        await repository.git.client.push("origin", "main");
 
         afterSpin.stop("Process completed successfully!");
 
         prompts.note(commitTag, "Release completed successfully!");
+
+        prompts.outro("Thank you for using Repo CLI! 🚀");
       } catch (error) {
         console.error("Error during release process:", error);
         return onCancel("An error occurred. Operation cancelled.");

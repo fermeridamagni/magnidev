@@ -38,48 +38,59 @@ export function commitCommand(program: Command): void {
 
         prompts.intro(colors.white(intro));
 
-        const beforeSpin = prompts.spinner();
-        beforeSpin.start("Getting package information");
-
-        if (!(await repository.git.isRepo())) {
-          beforeSpin.stop("Not a git repository.");
+        // Check if the repository is a git repository
+        if (!(await repository.git.client.checkIsRepo())) {
           return onCancel("Not a git repository.");
         }
 
+        // Check if the repository does not have any changes or uncommitted files
         if ((await repository.git.client.status()).files.length === 0) {
-          beforeSpin.stop("No changes detected in the repository.");
           return onCancel("No changes detected. Operation cancelled.");
         }
 
-        if (repository.config.repoType === "monorepo") {
-          const foundMonorepoPackages =
-            await repository.packages.findMonorepoPackages(process.cwd());
+        if (repository.getRepoType() === "monorepo") {
+          const foundWorkspacePackages =
+            await repository.packages.findWorkspacePackages(process.cwd());
 
-          if (foundMonorepoPackages.length === 0) {
-            beforeSpin.stop("No packages found in the repository");
-            return onCancel();
+          if (!foundWorkspacePackages || foundWorkspacePackages.length === 0) {
+            return onCancel("No packages found in the repository");
           }
 
-          packages = foundMonorepoPackages;
+          packages = foundWorkspacePackages;
         } else {
           const foundPackage = await repository.packages.findPackage(
             process.cwd()
           );
 
           if (foundPackage === null) {
-            beforeSpin.stop("No package found in the repository");
-            return onCancel();
+            return onCancel("No package found in the repository");
           }
 
           packages = [foundPackage];
         }
 
-        beforeSpin.stop("Repository information loaded successfully");
+        const currentBranch = await repository.git.client.branch();
+        const currentBranchName = currentBranch.current;
+
+        prompts.note(
+          `name: ${colors.green(repository.config.name)}\nbranch: ${colors.green(
+            currentBranchName
+          )}`,
+          "Repository information loaded successfully!"
+        );
 
         const commitConfig = await prompts.group(
           {
-            packageName: async () => {
-              if (repository.config.repoType === "monorepo") {
+            shouldContinue: async () =>
+              prompts.confirm({
+                message: "Are you sure you want to continue?",
+                initialValue: true,
+              }),
+            packageName: async ({ results }) => {
+              if (!results.shouldContinue)
+                return onCancel("Operation cancelled by the user.");
+
+              if (repository.getRepoType() === "monorepo") {
                 return prompts.select({
                   message: "Which package would you like to commit?",
                   options: packages.map((pkg) => ({
@@ -156,9 +167,9 @@ export function commitCommand(program: Command): void {
                 maxItems: 1,
               }),
             commitScope: async ({ results }) => {
-              if (repository.config.repoType !== "monorepo") return undefined;
+              if (repository.getRepoType() !== "monorepo") return undefined;
 
-              if (repository.config.versionStrategy === "independent")
+              if (repository.config.release.versionStrategy === "independent")
                 return results.packageName;
 
               return prompts.text({
@@ -222,7 +233,7 @@ export function commitCommand(program: Command): void {
         await repository.git.client.commit(commitMessage);
 
         if (commitConfig.shouldPush)
-          await repository.git.client.push("origin", repository.config.branch);
+          await repository.git.client.push("origin", "main");
 
         afterSpin.stop("Process completed successfully!");
 

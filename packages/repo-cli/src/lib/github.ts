@@ -4,7 +4,7 @@
  * @description Class to manage the Github API and repository information
  */
 
-import { Octokit, type RestEndpointMethodTypes } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 
 import type { Config } from "../types";
 
@@ -16,21 +16,22 @@ export class Github {
   }
 
   public async createRelease({
-    tagName,
+    tag_name,
     name,
     body,
     draft = false,
-    preRelease = false,
+    prerelease = false,
   }: {
-    tagName: string;
+    tag_name: string;
     name: string;
     body: string;
     draft: boolean;
-    preRelease: boolean;
+    prerelease: boolean;
   }): Promise<void> {
     try {
-      const [owner, repo] =
-        this.config.env.GITHUB_REPOSITORY_URL.split("/").slice(-2);
+      const [owner, repo] = this.config.release.repositoryUrl
+        .split("/")
+        .slice(-2);
 
       const octokit = new Octokit({
         auth: this.config.env.GITHUB_TOKEN,
@@ -39,11 +40,11 @@ export class Github {
       const { status } = await octokit.repos.createRelease({
         owner,
         repo,
-        tag_name: tagName,
+        tag_name,
         name,
         body,
         draft,
-        prerelease: preRelease,
+        prerelease,
       });
 
       if (status !== 201) {
