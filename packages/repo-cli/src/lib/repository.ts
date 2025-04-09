@@ -12,7 +12,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 import type { Config } from "../types";
 import { repoSchema } from "../schemas/repo.schema";
-import { readJSON } from "../utils/files";
+import { readJsonFile } from "../utils/files";
 import { Packages } from "./packages";
 import { Logger } from "./logger";
 import { Git } from "./git";
@@ -37,6 +37,7 @@ export class Repository {
    * @returns {Config} The repository configuration
    */
   private getConfig(): Config {
+    // Change return type to Promise<Config>
     const rootPackageJsonPath = path.join(process.cwd(), "package.json");
 
     if (!fs.existsSync(rootPackageJsonPath)) {
@@ -44,7 +45,7 @@ export class Repository {
       process.exit(1);
     }
 
-    const rootPackageJson = readJSON(rootPackageJsonPath);
+    const rootPackageJson = readJsonFile(rootPackageJsonPath);
 
     const { success, data, error } = repoSchema.safeParse({
       ...rootPackageJson,
@@ -69,7 +70,7 @@ export class Repository {
    */
   public getRepoType(): "monorepo" | "single" {
     const packageJsonPath = path.join(process.cwd(), "package.json");
-    const packageJson = readJSON(packageJsonPath);
+    const packageJson = readJsonFile(packageJsonPath);
 
     if (packageJson.workspaces) return "monorepo";
 

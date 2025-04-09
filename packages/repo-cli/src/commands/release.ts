@@ -6,7 +6,6 @@
 
 import * as prompts from "@clack/prompts";
 import * as path from "node:path";
-import * as fsPromises from "node:fs/promises";
 import { Command } from "commander";
 import colors from "picocolors";
 import semver, { type ReleaseType } from "semver";
@@ -15,7 +14,12 @@ import type { Package } from "../types";
 import { Repository } from "../lib/repository";
 import { intro } from "../assets/intro";
 import { generateNotes } from "../utils/notes";
-import { dirExists, readAsync, writeAsync } from "../utils/files";
+import {
+  appendMdFile,
+  dirExists,
+  writeJsonFile,
+  writeMdFile,
+} from "../utils/files";
 
 export function releaseCommand(program: Command): void {
   program
@@ -221,28 +225,17 @@ export function releaseCommand(program: Command): void {
 
         const packageJsonPath = path.join(foundPackage.dir, "package.json");
 
-        await fsPromises.writeFile(
-          packageJsonPath,
-          JSON.stringify(
-            {
-              ...foundPackage.packageJson,
-              version: newPackageVersion,
-            },
-            null,
-            2
-          )
-        );
+        await writeJsonFile(packageJsonPath, {
+          ...foundPackage.packageJson,
+          version: newPackageVersion,
+        });
 
         const changelogPath = path.join(foundPackage.dir, "CHANGELOG.md");
 
         if (dirExists(changelogPath)) {
-          const foundChangelog = await readAsync(changelogPath);
-
-          const newChangelog = `${foundChangelog}\n\n${notes}`;
-
-          await writeAsync(changelogPath, newChangelog);
+          await appendMdFile(changelogPath, `\n\n${notes}`);
         } else {
-          await writeAsync(changelogPath, "# Changelog\n\n${notes}");
+          await writeMdFile(changelogPath, `# Changelog\n\n${notes}`);
         }
 
         await repository.git.client.add([packageJsonPath, changelogPath]);

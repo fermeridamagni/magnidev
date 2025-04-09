@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
-import * as path from "node:path";
 
 import { commitCommand } from "./commands/commit";
 import { releaseCommand } from "./commands/release";

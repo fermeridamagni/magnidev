@@ -8,7 +8,7 @@ import fg from "fast-glob";
 import * as path from "node:path";
 
 import type { Package, Config } from "../types";
-import { readJSON, dirExists } from "../utils/files";
+import { readJsonFile, dirExists } from "../utils/files";
 
 export class Packages {
   private config: Config;
@@ -28,7 +28,7 @@ export class Packages {
     const packageJsonPath = path.join(dir, "package.json");
 
     if (dirExists(packageJsonPath)) {
-      const packageJson = readJSON(packageJsonPath);
+      const packageJson = await readJsonFile(packageJsonPath);
       return {
         name: packageJson.name,
         version: packageJson.version,

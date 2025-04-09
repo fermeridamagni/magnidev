@@ -13,7 +13,7 @@ export const dirExists = (path: string): boolean => {
  * @param file - The path to the JSON file
  * @returns The parsed JSON content
  */
-export const readJSON = (filePath: string) =>
+export const readJsonFile = (filePath: string) =>
   JSON.parse(fs.readFileSync(filePath, "utf8"));
 
 /**
@@ -22,11 +22,20 @@ export const readJSON = (filePath: string) =>
  * @returns A promise that resolves to the parsed JSON content
  */
 
-export const readAsync = async (filePath: string): Promise<any> => {
+export const writeJsonFile = async (
+  filePath: string,
+  data: object
+): Promise<void> => {
+  // Write the file asynchronously
+  // Use 'utf8' encoding to ensure the file is written as a text file
+  await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2), "utf8");
+};
+
+export const readMdFile = async (filePath: string): Promise<any> => {
   // Read the file asynchronously
   // Use 'utf8' encoding to ensure the file is read as a text file
   const data = await fs.promises.readFile(filePath, "utf8");
-  return JSON.parse(data);
+  return data;
 };
 
 /**
@@ -35,11 +44,26 @@ export const readAsync = async (filePath: string): Promise<any> => {
  * @param data - The data to write to the file
  * @returns A promise that resolves when the write operation is complete
  */
-export const writeAsync = async (
+export const writeMdFile = async (
   filePath: string,
   data: string
 ): Promise<void> => {
   // Write the file asynchronously
   // Use 'utf8' encoding to ensure the file is written as a text file
   await fs.promises.writeFile(filePath, data, "utf8");
+};
+
+/**
+ * @description Appends data to a file asynchronously
+ * @param filePath - The path to the file
+ * @param data - The data to append to the file
+ * @returns A promise that resolves when the append operation is complete
+ */
+export const appendMdFile = async (
+  filePath: string,
+  data: string
+): Promise<void> => {
+  // Append to the file asynchronously
+  // Use 'utf8' encoding to ensure the file is written as a text file
+  await fs.promises.appendFile(filePath, data, "utf8");
 };
