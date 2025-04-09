@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "repo-manager",
+  "title": "JSON schema for the Repo Manager configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "The JSON schema version used to validate this configuration file"
+    },
+    "repoType": {
+      "type": "string",
+      "description": "The type of project to manage",
+      "enum": ["single", "monorepo"],
+      "default": "single"
+    },
+    "versionStrategy": {
+      "type": "string",
+      "description": "The versioning strategy to use for the packages",
+      "enum": ["independent", "fixed"],
+      "default": "independent"
+    },
+
+    "branch": {
+      "type": "string",
+      "description": "The branch to use for the release",
+      "default": "main"
+    },
+    "packagesDir": {
+      "type": "string",
+      "description": "The directory where the packages are located",
+      "default": "packages"
+    }
+  },
+  "required": ["versionStrategy", "repoType", "branch", "packagesDir"]
+}
