@@ -1,6 +1,6 @@
 # Changelog
 
-## @magnidev/repo-cli@1.0.0 (4/9/2025)
+## @magnidev/repo-cli@1.0.0
 
 ### Changes
 
