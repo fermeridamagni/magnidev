@@ -2,32 +2,35 @@
   "name": "magnidev",
   "license": "ISC",
   "private": true,
-  "description": "",
+  "description": "Monorepo for Magni Developer tools.",
   "publisher": "fermeridamagni <Magni Developer>",
   "author": {
     "name": "fermeridamagni <Magni Developer>",
-    "url": "https://magnideveloper.com"
+    "url": "https://www.magnideveloper.com"
   },
   "repository": {
-    "url": "https://github.com/fermeridamagni/simple-auth.git",
+    "url": "https://github.com/fermeridamagni/magnidev.git",
     "type": "git"
   },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "lint": "turbo run lint"
   },
   "workspaces": [
     "packages/*"
   ],
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "^2.4.4",
     "typescript": "5.8.2"
   },
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@10.8.0",
   "engines": {
     "node": ">=18"
   }

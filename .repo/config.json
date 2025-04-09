@@ -1,0 +1,7 @@
+{
+  "$schema": "../packages/package-manager/src/schemas/repo.schema.json",
+  "repoType": "monorepo",
+  "versionStrategy": "independent",
+  "branch": "main",
+  "packagesDir": "packages"
+}
