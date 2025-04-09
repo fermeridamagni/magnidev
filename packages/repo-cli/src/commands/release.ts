@@ -191,16 +191,18 @@ export function releaseCommand(program: Command): void {
           from: latestTag,
         });
 
-        if (commits.all.length === 0) {
+        const packageCommits = commits.all.filter((commit) => {
+          return commit.message.includes(foundPackage.name);
+        });
+
+        if (packageCommits.length === 0) {
           afterSpin.stop("Process finished.");
           return onCancel("No commits found since last release.");
         }
 
         const notes = await generateNotes({
           version: commitTag,
-          commits: commits.all.map((commit) => ({
-            ...commit,
-          })),
+          commits: packageCommits,
         });
 
         await repository.git.client.addAnnotatedTag(commitTag, notes);
@@ -240,7 +242,7 @@ export function releaseCommand(program: Command): void {
 
           await writeAsync(changelogPath, newChangelog);
         } else {
-          await writeAsync(changelogPath, "# Changelog\n\n");
+          await writeAsync(changelogPath, "# Changelog\n\n${notes}");
         }
 
         await repository.git.client.add([packageJsonPath, changelogPath]);

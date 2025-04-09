@@ -19,9 +19,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "commit": "pnpm dlx node packages/repo-cli/dist/index.js commit",
+    "commit": "pnpm dlx @magnidev/repo-cli commit",
     "commit:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts commit",
-    "release": "pnpm dlx node packages/repo-cli/dist/index.js release",
+    "release": "pnpm dlx @magnidev/repo-cli release",
     "release:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts release"
   },
   "workspaces": [
@@ -44,6 +44,7 @@
     "versionStrategy": "independent"
   },
   "devDependencies": {
+    "@magnidev/repo-cli": "^1.0.0",
     "prettier": "^3.5.3",
     "turbo": "^2.5.0",
     "typescript": "5.8.3"

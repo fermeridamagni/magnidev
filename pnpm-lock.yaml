@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@magnidev/repo-cli':
+        specifier: ^1.0.0
+        version: 1.0.0
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -88,6 +91,10 @@ packages:
 
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
+
+  '@magnidev/repo-cli@1.0.0':
+    resolution: {integrity: sha512-iME+qhyoV7VeDCJHCxQQZ9YeJgWS1gZTQpaR//c5UBU0VSHuStfjCmNHZX0Eh/OoHQHCjV6PFj9mncYfMBwidQ==}
+    hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -397,6 +404,20 @@ snapshots:
       - supports-color
 
   '@kwsites/promise-deferred@1.1.1': {}
+
+  '@magnidev/repo-cli@1.0.0':
+    dependencies:
+      '@clack/prompts': 0.10.1
+      '@octokit/rest': 21.1.1
+      commander: 13.1.0
+      dotenv: 16.4.7
+      fast-glob: 3.3.3
+      picocolors: 1.1.1
+      semver: 7.7.1
+      simple-git: 3.27.0
+      zod: 3.24.2
+    transitivePeerDependencies:
+      - supports-color
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
