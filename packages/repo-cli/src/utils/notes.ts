@@ -9,13 +9,11 @@ export type Commit = DefaultLogFields & ListLogLine;
  * @returns The release notes as a string
  */
 export const generateNotes = async ({
-  version,
   commits,
 }: {
-  version: string;
   commits: Commit[];
 }): Promise<string> => {
-  let notes: string = `## ${version}\n\n`;
+  let notes: string = "";
 
   const authors = new Set<{
     name: string;

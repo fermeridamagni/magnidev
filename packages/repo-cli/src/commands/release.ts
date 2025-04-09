@@ -235,7 +235,6 @@ export function releaseCommand(program: Command): void {
         }
 
         const notes = await generateNotes({
-          version: commitTag,
           commits: packageCommits,
         });
 
@@ -261,11 +260,12 @@ export function releaseCommand(program: Command): void {
         });
 
         const changelogPath = path.join(foundPackage.dir, "CHANGELOG.md");
+        const changelogContent = `\n\n## ${commitTag}\n${notes}`;
 
         if (dirExists(changelogPath)) {
-          await appendMdFile(changelogPath, `\n\n${notes}`);
+          await appendMdFile(changelogPath, changelogContent);
         } else {
-          await writeMdFile(changelogPath, `# Changelog\n\n${notes}`);
+          await writeMdFile(changelogPath, `# Changelog${changelogContent}`);
         }
 
         await repository.git.client.add([packageJsonPath, changelogPath]);
