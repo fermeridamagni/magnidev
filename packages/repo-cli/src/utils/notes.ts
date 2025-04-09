@@ -15,7 +15,7 @@ export const generateNotes = async ({
   version: string;
   commits: Commit[];
 }): Promise<string> => {
-  let notes: string = `## ${version} (${new Date().toLocaleDateString()})\n\n`;
+  let notes: string = `## ${version}\n\n`;
 
   const authors = new Set<{
     name: string;
