@@ -12,23 +12,41 @@
     "url": "https://github.com/fermeridamagni/magnidev.git",
     "type": "git"
   },
+  "bugs": {
+    "url": "https://github.com/fermeridamagni/magnidev/issues"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "commit": "pnpm dlx node packages/repo-cli/dist/index.js commit",
+    "commit:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts commit",
+    "release": "pnpm dlx node packages/repo-cli/dist/index.js release",
+    "release:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts release"
   },
   "workspaces": [
     "packages/*"
   ],
   "release": {
     "branches": [
-      "main"
-    ]
+      {
+        "name": "main",
+        "prerelease": false,
+        "channel": "latest"
+      },
+      {
+        "name": "next",
+        "prerelease": true,
+        "channel": "next"
+      }
+    ],
+    "repositoryUrl": "https://github.com/fermeridamagni/magnidev",
+    "versionStrategy": "independent"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
-    "turbo": "^2.4.4",
-    "typescript": "5.8.2"
+    "turbo": "^2.5.0",
+    "typescript": "5.8.3"
   },
   "packageManager": "pnpm@10.8.0",
   "engines": {
