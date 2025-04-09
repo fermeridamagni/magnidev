@@ -54,6 +54,39 @@ export function releaseCommand(program: Command): void {
           return onCancel("Changes detected. Commit changes before releasing.");
         }
 
+        // Fetch latest changes from remote
+        await repository.git.client.fetch();
+
+        // Get current branch
+        const currentBranch = await repository.git.client.branch();
+        const currentBranchName = currentBranch.current;
+
+        // Check if local branch is behind remote
+        const status = await repository.git.client.status();
+        if (status.behind > 0) {
+          const shouldPull = await prompts.confirm({
+            message: `Your branch is ${status.behind} commit(s) behind the remote. Do you want to pull changes?`,
+            initialValue: true,
+          });
+
+          if (prompts.isCancel(shouldPull)) {
+            return onCancel("Operation cancelled by the user.");
+          }
+
+          if (shouldPull) {
+            const pullSpinner = prompts.spinner();
+            pullSpinner.start("Pulling changes from remote...");
+
+            try {
+              await repository.git.client.pull();
+              pullSpinner.stop("Changes pulled successfully!");
+            } catch (error: any) {
+              pullSpinner.stop("Failed to pull changes!");
+              return onCancel(`Error pulling changes: ${error.message}`);
+            }
+          }
+        }
+
         if (repository.config.workspaces) {
           const foundMonorepoPackages =
             await repository.packages.findWorkspacePackages(process.cwd());
@@ -74,9 +107,6 @@ export function releaseCommand(program: Command): void {
 
           packages = [foundPackage];
         }
-
-        const currentBranch = await repository.git.client.branch();
-        const currentBranchName = currentBranch.current;
 
         prompts.note(
           `name: ${colors.green(repository.config.name)}\nbranch: ${colors.green(

@@ -43,6 +43,39 @@ export function commitCommand(program: Command): void {
           return onCancel("Not a git repository.");
         }
 
+        // Fetch latest changes from remote
+        await repository.git.client.fetch();
+
+        // Get current branch
+        const currentBranch = await repository.git.client.branch();
+        const currentBranchName = currentBranch.current;
+
+        // Check if local branch is behind remote
+        const status = await repository.git.client.status();
+        if (status.behind > 0) {
+          const shouldPull = await prompts.confirm({
+            message: `Your branch is ${status.behind} commit(s) behind the remote. Do you want to pull changes?`,
+            initialValue: true,
+          });
+
+          if (prompts.isCancel(shouldPull)) {
+            return onCancel("Operation cancelled by the user.");
+          }
+
+          if (shouldPull) {
+            const pullSpinner = prompts.spinner();
+            pullSpinner.start("Pulling changes from remote...");
+
+            try {
+              await repository.git.client.pull();
+              pullSpinner.stop("Changes pulled successfully!");
+            } catch (error: any) {
+              pullSpinner.stop("Failed to pull changes!");
+              return onCancel(`Error pulling changes: ${error.message}`);
+            }
+          }
+        }
+
         // Check if the repository does not have any changes or uncommitted files
         if ((await repository.git.client.status()).files.length === 0) {
           return onCancel("No changes detected. Operation cancelled.");
@@ -68,9 +101,6 @@ export function commitCommand(program: Command): void {
 
           packages = [foundPackage];
         }
-
-        const currentBranch = await repository.git.client.branch();
-        const currentBranchName = currentBranch.current;
 
         prompts.note(
           `name: ${colors.green(repository.config.name)}\nbranch: ${colors.green(
