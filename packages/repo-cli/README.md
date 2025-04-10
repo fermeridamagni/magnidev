@@ -21,3 +21,7 @@ After installation, you can use the CLI tool by running:
 npx @magnidev/repo-cli <command> [options]
 pnpm dlx @magnidev/repo-cli <command> [options]
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
