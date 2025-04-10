@@ -1,6 +1,6 @@
 {
   "name": "@magnidev/frontend-utils",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "ISC",
   "description": "Utility functions for frontend development",
   "publisher": "fermeridamagni <Magni Developer>",
