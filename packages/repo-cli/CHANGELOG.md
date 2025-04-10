@@ -5,3 +5,17 @@
 ### Changes
 
 - feat(@magnidev/repo-cli): Release and Commit commands was added (d3b8001987b0b383f6ff0a6ecc076ef0827bd4a1)
+
+
+## @magnidev/repo-cli@1.0.1
+### Changes
+- fix(@magnidev/repo-cli): update changelog formatting and remove version parameter from generateNotes (df666edca6ceb805032e353a8751f1535997030b)
+- fix(@magnidev/repo-cli): remove date from version 1.0.0 entry in CHANGELOG (7c808da1b662e169c57b07e2428b7512627067fa)
+- fix(@magnidev/repo-cli): remove date from release notes header (eae5697ab5273a04e805a496c5448a09f1df7c39)
+- chore(@magnidev/repo-cli): update package version to 1.0.0, add LICENSE file, and clean up CHANGELOG (8d14335a791a501a100d9ecba27c5019ca57ace1)
+- feat(@magnidev/repo-cli): add branch status check and pull prompt before commit/release (ec42c65eacfe8bae8540dbbde2d345ad5aed4188)
+- chore(release): bump @magnidev/repo-cli@1.0.2 (4a7893ca0c6b3e5662dff93ea8ad509f671847ad)
+- fix(@magnidev/repo-cli): Fixed the error where the release fails when a CHANGELOG.md file is created (05aa79280bf3abff37232bfe6550ab3e02a42500)
+- fix(@magnidev/repo-cli): Fixed Changelog Notes and Package Commits (89797ba228da50e45ab261f65eb79695605486d8)
+- chore: update CHANGELOG for @magnidev/repo-cli@1.0.0 release (52970060da4f83d0485d92b60e534b03804114a3)
+- chore(release): bump @magnidev/repo-cli@1.0.0 (7b4bee2ec1ffb7a882233052c48b556041ab7d31)
