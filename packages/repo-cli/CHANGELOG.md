@@ -20,3 +20,10 @@
 - fix(@magnidev/repo-cli): Fixed Changelog Notes and Package Commits (89797ba228da50e45ab261f65eb79695605486d8)
 - chore: update CHANGELOG for @magnidev/repo-cli@1.0.0 release (52970060da4f83d0485d92b60e534b03804114a3)
 - chore(release): bump @magnidev/repo-cli@1.0.0 (7b4bee2ec1ffb7a882233052c48b556041ab7d31)
+
+
+## @magnidev/repo-cli@1.0.2
+### Changes
+- fix(@magnidev/repo-cli): update CHANGELOG formatting and remove dates from release notes; refactor release command to handle monorepo structure and improve commit filtering (4f3400df757394ee99ea4feca42a0ff179143fab)
+- feat(@magnidev/repo-cli): add license section to README (d19a759bd4f3d6e9972069dee64216a0a730eb94)
+- chore(release): bump @magnidev/repo-cli@1.0.1 (afe248c0ff4891066518a98a711f310d4c5734e8)
