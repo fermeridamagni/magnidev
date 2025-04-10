@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@magnidev/repo-cli':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -92,8 +92,8 @@ packages:
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
-  '@magnidev/repo-cli@1.0.0':
-    resolution: {integrity: sha512-iME+qhyoV7VeDCJHCxQQZ9YeJgWS1gZTQpaR//c5UBU0VSHuStfjCmNHZX0Eh/OoHQHCjV6PFj9mncYfMBwidQ==}
+  '@magnidev/repo-cli@1.0.1':
+    resolution: {integrity: sha512-1N6/q3Iu+mkbs+hf32JRWtN5OnwOD5fkxbOREc66vSufWdp6U0gO1fopyO5U04/ppyTdmMtbxDohK7jfBBfrig==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -405,7 +405,7 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@magnidev/repo-cli@1.0.0':
+  '@magnidev/repo-cli@1.0.1':
     dependencies:
       '@clack/prompts': 0.10.1
       '@octokit/rest': 21.1.1
