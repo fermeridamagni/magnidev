@@ -1,4 +1,4 @@
-# ⭐@magnidev/frontend-utils
+# Frontend Utils
 
 ## Description
 
