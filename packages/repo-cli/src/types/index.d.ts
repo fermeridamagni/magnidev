@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { DefaultLogFields, ListLogLine } from "simple-git";
 
 import { repoSchema } from "../schemas/repo.schema";
 
@@ -16,3 +17,5 @@ export type Package = {
   version: string;
   packageJson: Record<string, any>;
 };
+
+export type Commit = DefaultLogFields & ListLogLine;

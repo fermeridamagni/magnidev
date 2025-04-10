@@ -1,4 +1,4 @@
-# ⭐@magnidev/repo-cli
+# Repo CLI
 
 ## Description
 

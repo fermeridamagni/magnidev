@@ -10,15 +10,15 @@ import { Command } from "commander";
 import colors from "picocolors";
 import semver, { type ReleaseType } from "semver";
 
-import type { Package } from "../types";
+import type { Commit, Package } from "../types";
 import { Repository } from "../lib/repository";
 import { intro } from "../assets/intro";
 import { generateNotes } from "../utils/notes";
 import {
-  appendMdFile,
   dirExists,
   writeJsonFile,
   writeMdFile,
+  appendMdFile,
 } from "../utils/files";
 
 export function releaseCommand(program: Command): void {
@@ -87,7 +87,7 @@ export function releaseCommand(program: Command): void {
           }
         }
 
-        if (repository.config.workspaces) {
+        if (repository.getRepoType() === "monorepo") {
           const foundMonorepoPackages =
             await repository.packages.findWorkspacePackages(process.cwd());
 
@@ -225,13 +225,27 @@ export function releaseCommand(program: Command): void {
           from: latestTag,
         });
 
-        const packageCommits = commits.all.filter((commit) => {
-          return commit.message.includes(foundPackage.name);
-        });
+        if (commits.all.length === 0) {
+          afterSpin.stop("Process finished.");
+          return onCancel("No commits found since last release.");
+        }
+
+        // Filter commits for the specific package
+        let packageCommits: Commit[] = [];
+
+        if (repository.getRepoType() === "monorepo") {
+          packageCommits = commits.all.filter((commit) =>
+            commit.message.includes(foundPackage.name)
+          );
+        } else {
+          packageCommits = commits.all.map((commit) => ({
+            ...commit,
+          }));
+        }
 
         if (packageCommits.length === 0) {
           afterSpin.stop("Process finished.");
-          return onCancel("No commits found since last release.");
+          return onCancel("No package commits found since last release.");
         }
 
         const notes = await generateNotes({

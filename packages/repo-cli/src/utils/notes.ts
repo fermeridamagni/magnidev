@@ -1,6 +1,4 @@
-import type { DefaultLogFields, ListLogLine } from "simple-git";
-
-export type Commit = DefaultLogFields & ListLogLine;
+import type { Commit } from "../types";
 
 /**
  * @description Generates the notes for the release based on the commit messages

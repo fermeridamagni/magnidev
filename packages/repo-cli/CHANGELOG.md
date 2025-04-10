@@ -6,9 +6,10 @@
 
 - feat(@magnidev/repo-cli): Release and Commit commands was added (d3b8001987b0b383f6ff0a6ecc076ef0827bd4a1)
 
-
 ## @magnidev/repo-cli@1.0.1
+
 ### Changes
+
 - fix(@magnidev/repo-cli): update changelog formatting and remove version parameter from generateNotes (df666edca6ceb805032e353a8751f1535997030b)
 - fix(@magnidev/repo-cli): remove date from version 1.0.0 entry in CHANGELOG (7c808da1b662e169c57b07e2428b7512627067fa)
 - fix(@magnidev/repo-cli): remove date from release notes header (eae5697ab5273a04e805a496c5448a09f1df7c39)
