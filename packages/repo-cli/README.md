@@ -8,7 +8,7 @@ CLI tool for managing GitHub repositories and NPM Packages.
 
 To install the package, run:
 
-```
+```bash
 npm install @magnidev/repo-cli
 pnpm add @magnidev/repo-cli
 ```
@@ -17,7 +17,7 @@ pnpm add @magnidev/repo-cli
 
 After installation, you can use the CLI tool by running:
 
-```
+```bash
 npx @magnidev/repo-cli <command> [options]
 pnpm dlx @magnidev/repo-cli <command> [options]
 ```

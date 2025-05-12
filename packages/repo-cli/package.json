@@ -9,7 +9,7 @@
     "url": "https://www.magnideveloper.com"
   },
   "repository": {
-    "url": "git+https://github.com/fermeridamagni/magnidev.git",
+    "url": "git+https://github.com/fermeridamagni/magnidev",
     "type": "git",
     "directory": "packages/repo-cli"
   },
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/fermeridamagni/magnidev/issues"
   },
-  "homepage": "https://github.com/fermeridamagni/magnidev/tree/main/packages/repo-cli#readme",
+  "homepage": "https://www.magnideveloper.com/en/docs/package/repo-cli",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node src/index.ts"
