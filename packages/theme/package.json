@@ -1,0 +1,48 @@
+{
+  "name": "@magnidev/theme",
+  "version": "0.1.0",
+  "license": "ISC",
+  "description": "Theme for Magni Development.",
+  "publisher": "fermeridamagni <Magni Developer>",
+  "author": {
+    "name": "fermeridamagni <Magni Developer>",
+    "url": "https://www.magnideveloper.com"
+  },
+  "repository": {
+    "url": "git+https://github.com/fermeridamagni/magnidev-priv.git",
+    "type": "git",
+    "directory": "packages/theme"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/fermeridamagni/magnidev/issues"
+  },
+  "homepage": "https://github.com/fermeridamagni/magnidev/tree/main/packages/theme#readme",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "types": "",
+  "exports": {
+    ".": "./dist/index.js",
+    "./tailwind.css": "./dist/styles.css"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "tailwindcss": "^4.1.6",
+    "tw-animate-css": "^1.2.9"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}
