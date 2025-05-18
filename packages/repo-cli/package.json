@@ -1,6 +1,6 @@
 {
   "name": "@magnidev/repo-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "ISC",
   "description": "CLI tool for managing GitHub repositories.",
   "publisher": "fermeridamagni <Magni Developer>",
