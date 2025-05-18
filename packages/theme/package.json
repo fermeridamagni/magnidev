@@ -24,7 +24,7 @@
   "types": "",
   "exports": {
     ".": "./dist/index.js",
-    "./tailwind.css": "./dist/styles.css"
+    "./styles.css": "./dist/tailwindcss/styles.css"
   },
   "main": "dist/index.js",
   "files": [
@@ -38,8 +38,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "peerDependencies": {
+    "tailwindcss": "^4.1.6"
+  },
   "dependencies": {
-    "tailwindcss": "^4.1.6",
     "tw-animate-css": "^1.2.9"
   },
   "devDependencies": {
