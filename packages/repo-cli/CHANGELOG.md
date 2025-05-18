@@ -2,13 +2,13 @@
 
 ## @magnidev/repo-cli@1.0.0
 
-### Changes
+### Changes (1.0.0)
 
 - feat(@magnidev/repo-cli): Release and Commit commands was added (d3b8001987b0b383f6ff0a6ecc076ef0827bd4a1)
 
 ## @magnidev/repo-cli@1.0.1
 
-### Changes
+### Changes (1.0.1)
 
 - fix(@magnidev/repo-cli): update changelog formatting and remove version parameter from generateNotes (df666edca6ceb805032e353a8751f1535997030b)
 - fix(@magnidev/repo-cli): remove date from version 1.0.0 entry in CHANGELOG (7c808da1b662e169c57b07e2428b7512627067fa)
@@ -21,9 +21,10 @@
 - chore: update CHANGELOG for @magnidev/repo-cli@1.0.0 release (52970060da4f83d0485d92b60e534b03804114a3)
 - chore(release): bump @magnidev/repo-cli@1.0.0 (7b4bee2ec1ffb7a882233052c48b556041ab7d31)
 
-
 ## @magnidev/repo-cli@1.0.2
-### Changes
+
+### Changes (1.0.2)
+
 - fix(@magnidev/repo-cli): update CHANGELOG formatting and remove dates from release notes; refactor release command to handle monorepo structure and improve commit filtering (4f3400df757394ee99ea4feca42a0ff179143fab)
 - feat(@magnidev/repo-cli): add license section to README (d19a759bd4f3d6e9972069dee64216a0a730eb94)
 - chore(release): bump @magnidev/repo-cli@1.0.1 (afe248c0ff4891066518a98a711f310d4c5734e8)
