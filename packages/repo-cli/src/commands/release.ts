@@ -250,6 +250,7 @@ export function releaseCommand(program: Command): void {
 
         const notes = await generateNotes({
           commits: packageCommits,
+          version: newPackageVersion,
         });
 
         await repository.git.client.addAnnotatedTag(commitTag, notes);

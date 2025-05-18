@@ -8,8 +8,10 @@ import type { Commit } from "../types";
  */
 export const generateNotes = async ({
   commits,
+  version,
 }: {
   commits: Commit[];
+  version: string;
 }): Promise<string> => {
   let notes: string = "";
 
@@ -36,9 +38,9 @@ export const generateNotes = async ({
     if (author) author.commits.push(commit.hash);
   });
 
-  notes += `### Changes\n`;
+  notes += `### Changes (${version})\n`;
   commits.forEach((commit) => {
-    notes += `- ${commit.message} (${commit.hash})\n`;
+    notes += `\n- ${commit.message} (${commit.hash})\n`;
   });
 
   return notes;
