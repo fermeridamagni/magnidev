@@ -24,7 +24,7 @@
   "types": "",
   "exports": {
     ".": "./dist/index.js",
-    "./styles.css": "./dist/tailwindcss/styles.css"
+    "./styles": "./dist/tailwindcss/styles.css"
   },
   "main": "dist/index.js",
   "files": [
