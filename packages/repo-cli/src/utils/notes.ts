@@ -38,7 +38,7 @@ export const generateNotes = async ({
     if (author) author.commits.push(commit.hash);
   });
 
-  notes += `### Changes (${version})\n`;
+  notes += `\n### Changes (${version})\n`;
   commits.forEach((commit) => {
     notes += `\n- ${commit.message} (${commit.hash})\n`;
   });

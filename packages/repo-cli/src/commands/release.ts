@@ -50,8 +50,17 @@ export function releaseCommand(program: Command): void {
           return onCancel("Not a git repository.");
         }
 
-        if ((await repository.git.client.status()).files.length > 0) {
-          return onCancel("Changes detected. Commit changes before releasing.");
+        const status = await repository.git.client.status();
+
+        if (status.files.length > 0) {
+          const shouldContinue = await prompts.confirm({
+            message: "You have uncommitted changes. Do you want to continue?",
+            initialValue: false,
+          });
+
+          if (!shouldContinue) {
+            return onCancel("Operation cancelled by the user.");
+          }
         }
 
         // Fetch latest changes from remote
@@ -62,7 +71,6 @@ export function releaseCommand(program: Command): void {
         const currentBranchName = currentBranch.current;
 
         // Check if local branch is behind remote
-        const status = await repository.git.client.status();
         if (status.behind > 0) {
           const shouldPull = await prompts.confirm({
             message: `Your branch is ${status.behind} commit(s) behind the remote. Do you want to pull changes?`,
@@ -275,7 +283,7 @@ export function releaseCommand(program: Command): void {
         });
 
         const changelogPath = path.join(foundPackage.dir, "CHANGELOG.md");
-        const changelogContent = `\n\n## ${commitTag}\n${notes}`;
+        const changelogContent = `\n## ${commitTag}\n\n${notes}`;
 
         if (dirExists(changelogPath)) {
           await appendMdFile(changelogPath, changelogContent);
