@@ -19,37 +19,28 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "commit": "pnpm dlx @magnidev/repo-cli commit",
-    "commit:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts commit",
-    "release": "pnpm dlx @magnidev/repo-cli release",
-    "release:dev": "pnpm dlx ts-node packages/repo-cli/src/index.ts release"
+    "format:fix": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "workspaces": [
     "packages/*"
   ],
   "release": {
-    "branches": [
-      {
-        "name": "main",
-        "prerelease": false,
-        "channel": "latest"
-      },
-      {
-        "name": "next",
-        "prerelease": true,
-        "channel": "next"
-      }
-    ],
     "repositoryUrl": "https://github.com/fermeridamagni/magnidev",
-    "versionStrategy": "independent"
+    "strategy": "independent"
   },
   "devDependencies": {
-    "@magnidev/repo-cli": "^1.0.1",
+    "@magnidev/repo-cli": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
     "prettier": "^3.5.3",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.3",
     "typescript": "5.8.3"
   },
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@10.11.0",
   "engines": {
     "node": ">=18"
   }

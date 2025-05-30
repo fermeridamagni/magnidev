@@ -10,8 +10,13 @@
     "lint": {
       "dependsOn": ["^lint"]
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "format:fix": {
+      "dependsOn": ["^format:fix"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "format:check": {
+      "dependsOn": ["^format:check"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
     "dev": {
       "cache": false,
