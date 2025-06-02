@@ -12,8 +12,8 @@ import type { Package } from "../types";
 import { intro } from "../assets/intro";
 import { Repository } from "../lib/repository";
 
-export function commitCommand(program: Command): void {
-  program
+function commitCommand(program: Command): Command {
+  return program
     .command("commit")
     .description(
       "Creates a new structured commit according to the Conventional Commits specification."
@@ -284,3 +284,5 @@ export function commitCommand(program: Command): void {
     process.exit(0);
   }
 }
+
+export { commitCommand };

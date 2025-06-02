@@ -1,8 +1,8 @@
 {
-  "name": "@magnidev/repo-cli",
+  "name": "@magnidev/repo-cli-legacy",
   "version": "1.0.3",
   "license": "ISC",
-  "description": "CLI tool for managing GitHub repositories.",
+  "description": "CLI to manage packages in Repositories or Monorepos of GitHub.",
   "publisher": "fermeridamagni <Magni Developer>",
   "author": {
     "name": "fermeridamagni <Magni Developer>",
@@ -20,7 +20,7 @@
   "homepage": "https://www.magnideveloper.com/en/docs/package/repo-cli",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "ts-node src/index.ts"
+    "dev": "tsc -p tsconfig.json && node --trace-warnings dist/index.js"
   },
   "types": "./dist/index.d.ts",
   "bin": {
